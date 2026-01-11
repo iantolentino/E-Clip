@@ -91,7 +91,6 @@
 <div>
   <button onclick="generateLink()">Generate URL</button>
   <button onclick="copyText()">Copy Code</button>
-  <button onclick="shortenURL()">Shorten URL</button>
 </div>
 
 <p>Shareable URL:<br>
@@ -115,6 +114,7 @@
       linkInput.value = '';
       return;
     }
+    // Compress text to make URL shorter
     const compressed = LZString.compressToEncodedURIComponent(textarea.value);
     const url = `${location.origin}${location.pathname}#${compressed}`;
     linkInput.value = url;
@@ -122,32 +122,6 @@
 
   function copyText() {
     navigator.clipboard.writeText(textarea.value);
-  }
-
-  async function shortenURL() {
-    if (!linkInput.value) return alert('Generate the URL first!');
-    try {
-      const response = await fetch(`https://api.tinyurl.com/create`, {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer YOUR_TINYURL_API_KEY',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          url: linkInput.value,
-          domain: 'tiny.one'
-        })
-      });
-      const data = await response.json();
-      if (data.data && data.data.tiny_url) {
-        linkInput.value = data.data.tiny_url;
-      } else {
-        alert('Failed to shorten URL.');
-      }
-    } catch (e) {
-      console.error(e);
-      alert('Error shortening URL. Make sure your API key is valid.');
-    }
   }
 
   // Load text from URL on page open
